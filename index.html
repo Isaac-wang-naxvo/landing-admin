@@ -471,7 +471,7 @@
      ════════════════════════════════════════ -->
 <script>
   const ADMIN_PASSWORD  = "isaac2025";   // ← 改成你的密碼
-  const SUPABASE_URL    = "https://hquzczhzcoygnmninemvp.supabase.co";
+  const SUPABASE_URL    = "https://hquzchzcoygnmninemvp.supabase.co";
   const SUPABASE_ANON   = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhxdXpjaHpjb3lnbm1uaW5lbXZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNzIwMjQsImV4cCI6MjA5NDc0ODAyNH0.igTevzpprg0W_tb3FgcVt5gILcONWMG1jYAW_p7GhYk";
   const FRONTEND_BASE   = "https://isaac-wang-naxvo.github.io/landing-page/";
 </script>
@@ -823,49 +823,35 @@ async function aiAutofill() {
   status.style.display = 'block';
   status.textContent = '🤖 AI 正在分析你的產品，生成文案中...';
 
-  const systemPrompt = `你是一位頂尖的行銷文案專家，專精於台灣中小企業的轉換率優化。
-用戶會告訴你一個產品或市場，你需要為他生成一個高轉換率的 Landing Page 設定。
-
-這個產品可能屬於以下三種類型之一，請先判斷類型再生成對應文案：
-
-【類型 A：對外客服 / 顧客互動】
-- 場景：LINE 客服自動回覆、預約系統、訂單通知、問卷收集
-- 受眾：餐廳、美容、診所、零售等直接面對消費者的行業
-- 痛點方向：漏單、回覆太慢、客人體驗差
-- 標題方向：「24小時自動接單」「不再漏接任何一筆生意」
-
-【類型 B：對內流程 / 員工管理】
-- 場景：請假審批、排班通知、內部報表、文件簽核、員工FAQ機器人
-- 受眾：連鎖店、製造業、服務業的老闆或HR
-- 痛點方向：主管每天被瑣事打擾、資訊傳達不一致、行政效率低
-- 標題方向：「讓主管從行政雜事解放」「員工自助，你只看結果」
-
-【類型 C：數據整合 / 後台管理】
-- 場景：多平台訂單整合、庫存自動更新、財務報表自動生成、CRM資料同步
-- 受眾：電商、批發、代理商
-- 痛點方向：系統孤島、手動整理資料浪費時間、資料錯誤損失金錢
-- 標題方向：「所有數據自動匯整」「告別 Excel 地獄」
-
-根據用戶描述判斷類型，生成精準對應的文案。
-
-必須以 JSON 格式回覆，不要有任何其他文字，格式如下：
+  const systemPrompt = `# Role
+你是一個精通 B2B SaaS 轉換率優化（CRO）與行銷心理學的商業文案大師。
+# Task
+根據用戶輸入的「想測試的商品概念」，自動判斷其場景（對外客服、對內管理、數據整合），並將其轉化為最具殺傷力、符合台灣在地商業大白話的 Landing Page 欄位設定。
+# Output Format
+你必須且只能回傳一個乾淨的 JSON 物件，嚴禁包含任何 Markdown 語法標籤（如 \`\`\`json）、引言或解釋。
+# Constraints
+1. 語言：必須全部使用繁體中文（台灣習慣用語，例如：用「班表」不用「排班表」、用「專人」不用「客服人員」）。
+2. 文案風格：理性、直接、打中痛點、不拍馬屁、去除不必要的修飾贅字。
+3. 名額設定：總名額固定為 5，已使用名額固定為 3（製造僅剩 2 名的急迫感）。
+4. 主題樣式：從 [electric-bold, dark-minimal, soft-pastel, warm-cream] 中挑選一個最符合該產品科技感的樣式名稱。
+# JSON Schema
 {
-  "param": "網址參數（英文小寫+連字號，例如 pet-grooming）",
-  "theme": "主題（dark-minimal 或 warm-cream 或 electric-bold 或 soft-pastel，根據產業選擇；B2B 選 dark-minimal 或 electric-bold，消費者品牌選 warm-cream 或 soft-pastel）",
-  "badge": "徽章標語（製造稀缺感，例如：限額內測 · 僅開放 5 組）",
-  "headline": "主標題（聚焦痛點或結果，有力短句，可用\\n換行，不超過12字）",
-  "subtext": "副標題（具體描述服務內容和價值，提到具體的工作項目名稱，2-3句話）",
-  "cta": "CTA按鈕文字（利益導向，例如：免費獲取自動化方案）",
-  "social": "社會證明（例如：已有 23 家企業預約）",
+  "param": "英文與連字號，例如 clinic-ai",
+  "theme": "主題樣式名稱",
+  "badge": "限額內測．僅開放 5 組專用",
+  "headline": "主標題，必須包含 \\n 作為換行符號，字數控制在 20 字內，主打防漏單或省成本的巨大利益",
+  "subtext": "副標題說明，字數 80 字內，說明產品如何運作與帶來的具體量化數據結果",
+  "cta": "利益導向的行動呼籲文字，例如：免費獲取我的 AI 診所方案",
+  "social": "已有 X 家企業/工作室正在排隊候補",
   "pains": [
-    {"icon": "emoji", "title": "痛點標題（5字內）", "desc": "痛點描述（強調金錢損失或時間浪費，要具體）"},
-    {"icon": "emoji", "title": "痛點標題（5字內）", "desc": "痛點描述（強調金錢損失或時間浪費，要具體）"},
-    {"icon": "emoji", "title": "痛點標題（5字內）", "desc": "痛點描述（強調金錢損失或時間浪費，要具體）"}
+    { "icon": "emoji", "title": "痛點 1 標題（8字內）", "desc": "痛點 1 具體虧錢或浪費時間的描述（40字內）" },
+    { "icon": "emoji", "title": "痛點 2 標題（8字內）", "desc": "痛點 2 具體虧錢或浪費時間的描述（40字內）" },
+    { "icon": "emoji", "title": "痛點 3 標題（8字內）", "desc": "痛點 3 具體虧錢或浪費時間的描述（40字內）" }
   ],
   "features": [
-    {"icon": "emoji", "title": "賣點標題（5字內）", "desc": "賣點描述（強調具體結果或數字）"},
-    {"icon": "emoji", "title": "賣點標題（5字內）", "desc": "賣點描述（強調具體結果或數字）"},
-    {"icon": "emoji", "title": "賣點標題（5字內）", "desc": "賣點描述（強調具體結果或數字）"}
+    { "icon": "emoji", "title": "賣點 1 標題（8字內）", "desc": "對應解決方案的自動化好處（40字內）" },
+    { "icon": "emoji", "title": "賣點 2 標題（8字內）", "desc": "對應解決方案的自動化好處（40字內）" },
+    { "icon": "emoji", "title": "賣點 3 標題（8字內）", "desc": "對應解決方案的自動化好處（40字內）" }
   ]
 }`;
 
