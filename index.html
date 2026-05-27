@@ -669,6 +669,8 @@ function renderLeads() {
 // ── Modal helpers ─────────────────────────────────────────
 function openModal(cfg = null) {
   editingId = cfg ? cfg.id : null;
+  window._aiDemoChat    = null;
+  window._aiCompareRows = null;
   document.getElementById('modal-title').textContent = cfg ? '編輯產品' : '新增產品';
 
   // reset
@@ -754,6 +756,10 @@ async function saveProduct() {
     desc:  document.getElementById(`f${i}-desc`).value,
   })).filter(f => f.title);
 
+  // 取得 AI 生成的 demo_chat 和 compare_rows（若有）
+  const aiDemoChat    = window._aiDemoChat    || null;
+  const aiCompareRows = window._aiCompareRows || null;
+
   const payload = {
     param_key:    param,
     theme:        document.getElementById('f-theme').value,
@@ -766,6 +772,8 @@ async function saveProduct() {
     slots_taken:  parseInt(document.getElementById('f-taken').value) || 0,
     pains:        pains,
     features:     features,
+    demo_chat:    aiDemoChat,
+    compare_rows: aiCompareRows,
     is_active:    true,
   };
 
@@ -852,6 +860,19 @@ async function aiAutofill() {
     { "icon": "emoji", "title": "賣點 1 標題（8字內）", "desc": "對應解決方案的自動化好處（40字內）" },
     { "icon": "emoji", "title": "賣點 2 標題（8字內）", "desc": "對應解決方案的自動化好處（40字內）" },
     { "icon": "emoji", "title": "賣點 3 標題（8字內）", "desc": "對應解決方案的自動化好處（40字內）" }
+  ],
+  "demo_chat": {
+    "msg1": "客人發送的第一則訊息（真實口語，符合該產業）",
+    "msg2": "客人發送的第二則訊息（追問或補充）",
+    "reply1": "AI 即時回覆第一則（專業、具體、帶行動指引）",
+    "reply2": "AI 即時回覆第二則（解答追問，體現自動化價值）",
+    "result": "底部自動化成果說明（說明後台自動完成了什麼，一句話）"
+  },
+  "compare_rows": [
+    { "task": "任務名稱", "human": "人工處理的痛苦", "ai": "AI 自動化的結果" },
+    { "task": "任務名稱", "human": "人工處理的痛苦", "ai": "AI 自動化的結果" },
+    { "task": "任務名稱", "human": "人工處理的痛苦", "ai": "AI 自動化的結果" },
+    { "task": "任務名稱", "human": "人工處理的痛苦", "ai": "AI 自動化的結果" }
   ]
 }`;
 
@@ -894,8 +915,12 @@ async function aiAutofill() {
       document.getElementById(`f${i}-desc`).value  = f.desc  || '';
     });
 
+    // 儲存 demo_chat 和 compare_rows 到全域變數供 saveProduct 使用
+    window._aiDemoChat    = cfg.demo_chat    || null;
+    window._aiCompareRows = cfg.compare_rows || null;
+
     updateUrlPreview();
-    status.textContent = '✅ 填寫完成！請檢查並手動調整後儲存。';
+    status.textContent = '✅ 填寫完成！對話示範和比較表也已自動生成，請檢查後儲存。';
     status.style.color = '#22c55e';
   } catch (err) {
     status.textContent = '❌ 生成失敗，請再試一次。';
