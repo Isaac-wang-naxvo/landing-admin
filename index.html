@@ -346,6 +346,19 @@
     <button class="modal-close" onclick="closeModal()">×</button>
     <div class="modal-title" id="modal-title">新增產品</div>
 
+    <!-- ── AI 自動填寫區塊 ── -->
+    <div style="background:rgba(212,255,71,.05);border:1px solid rgba(212,255,71,.2);border-radius:10px;padding:14px 16px;margin-bottom:20px;">
+      <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:8px;">✦ AI 自動填寫</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">告訴 AI 你想測試的產品或市場，它會自動幫你填好所有欄位，你再手動調整即可。</div>
+      <div style="display:flex;gap:8px;">
+        <input class="field-input" id="ai-prompt" placeholder="例如：幫寵物美容店設計 Landing Page，主打到府服務" style="flex:1;font-size:13px;" />
+        <button onclick="aiAutofill()" id="ai-btn" style="padding:10px 16px;background:var(--accent);color:#0a0a0a;font-size:12px;font-weight:700;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;transition:opacity .2s;">
+          ✦ AI 生成
+        </button>
+      </div>
+      <div id="ai-status" style="font-size:11px;color:var(--text3);margin-top:6px;display:none;"></div>
+    </div>
+
     <div class="field-row">
       <div class="field-group">
         <label class="field-label">網址參數 (?p=)</label>
@@ -458,7 +471,7 @@
      ════════════════════════════════════════ -->
 <script>
   const ADMIN_PASSWORD  = "isaac2025";   // ← 改成你的密碼
-  const SUPABASE_URL    = "https://hquzchzcoygnmninemvp.supabase.co";
+  const SUPABASE_URL    = "https://hquzczhzcoygnmninemvp.supabase.co";
   const SUPABASE_ANON   = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhxdXpjaHpjb3lnbm1uaW5lbXZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNzIwMjQsImV4cCI6MjA5NDc0ODAyNH0.igTevzpprg0W_tb3FgcVt5gILcONWMG1jYAW_p7GhYk";
   const FRONTEND_BASE   = "https://isaac-wang-naxvo.github.io/landing-page/";
 </script>
@@ -793,6 +806,98 @@ async function deleteProduct(id) {
   toast('已刪除');
   await loadConfigs();
   renderProducts();
+}
+
+// ── AI Autofill ───────────────────────────────────────────
+async function aiAutofill() {
+  const prompt = document.getElementById('ai-prompt').value.trim();
+  if (!prompt) {
+    document.getElementById('ai-prompt').style.borderColor = '#ef4444';
+    return;
+  }
+  const btn = document.getElementById('ai-btn');
+  const status = document.getElementById('ai-status');
+  btn.textContent = '生成中...';
+  btn.style.opacity = '.6';
+  btn.disabled = true;
+  status.style.display = 'block';
+  status.textContent = '🤖 AI 正在分析你的產品，生成文案中...';
+
+  const systemPrompt = `你是一位頂尖的行銷文案專家，專精於台灣中小企業的轉換率優化。
+用戶會告訴你一個產品或市場，你需要為他生成一個高轉換率的 Landing Page 設定。
+
+必須以 JSON 格式回覆，不要有任何其他文字，格式如下：
+{
+  "param": "網址參數（英文小寫+連字號，例如 pet-grooming）",
+  "theme": "主題（dark-minimal 或 warm-cream 或 electric-bold 或 soft-pastel，根據產業選擇）",
+  "badge": "徽章標語（製造稀缺感，例如：限額內測 · 僅開放 5 組）",
+  "headline": "主標題（聚焦痛點或結果，有力短句，可用\\n換行）",
+  "subtext": "副標題（具體描述服務內容和價值，2-3句話）",
+  "cta": "CTA按鈕文字（利益導向，例如：免費獲取方案）",
+  "social": "社會證明（例如：已有 23 位客人預約）",
+  "pains": [
+    {"icon": "emoji", "title": "痛點標題", "desc": "痛點描述（強調損失）"},
+    {"icon": "emoji", "title": "痛點標題", "desc": "痛點描述（強調損失）"},
+    {"icon": "emoji", "title": "痛點標題", "desc": "痛點描述（強調損失）"}
+  ],
+  "features": [
+    {"icon": "emoji", "title": "賣點標題", "desc": "賣點描述（強調收益）"},
+    {"icon": "emoji", "title": "賣點標題", "desc": "賣點描述（強調收益）"},
+    {"icon": "emoji", "title": "賣點標題", "desc": "賣點描述（強調收益）"}
+  ]
+}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await res.json();
+    const text = data.content?.[0]?.text || '';
+    const clean = text.replace(/```json|```/g, '').trim();
+    const cfg = JSON.parse(clean);
+
+    // 填入所有欄位
+    document.getElementById('f-param').value    = cfg.param    || '';
+    document.getElementById('f-theme').value    = cfg.theme    || 'dark-minimal';
+    document.getElementById('f-badge').value    = cfg.badge    || '';
+    document.getElementById('f-headline').value = cfg.headline || '';
+    document.getElementById('f-subtext').value  = cfg.subtext  || '';
+    document.getElementById('f-cta').value      = cfg.cta      || '';
+    document.getElementById('f-social').value   = cfg.social   || '';
+
+    cfg.pains?.forEach((p, i) => {
+      if (i > 2) return;
+      document.getElementById(`p${i}-icon`).value  = p.icon  || '';
+      document.getElementById(`p${i}-title`).value = p.title || '';
+      document.getElementById(`p${i}-desc`).value  = p.desc  || '';
+    });
+    cfg.features?.forEach((f, i) => {
+      if (i > 2) return;
+      document.getElementById(`f${i}-icon`).value  = f.icon  || '';
+      document.getElementById(`f${i}-title`).value = f.title || '';
+      document.getElementById(`f${i}-desc`).value  = f.desc  || '';
+    });
+
+    updateUrlPreview();
+    status.textContent = '✅ 填寫完成！請檢查並手動調整後儲存。';
+    status.style.color = '#22c55e';
+  } catch (err) {
+    status.textContent = '❌ 生成失敗，請再試一次。';
+    status.style.color = '#ef4444';
+    console.error(err);
+  } finally {
+    btn.textContent = '✦ AI 生成';
+    btn.style.opacity = '1';
+    btn.disabled = false;
+  }
 }
 
 // ── Auto init ─────────────────────────────────────────────
