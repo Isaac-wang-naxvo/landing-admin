@@ -349,9 +349,9 @@
     <!-- ── AI 自動填寫區塊 ── -->
     <div style="background:rgba(212,255,71,.05);border:1px solid rgba(212,255,71,.2);border-radius:10px;padding:14px 16px;margin-bottom:20px;">
       <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:8px;">✦ AI 自動填寫</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">告訴 AI 你想測試的產品或市場，它會自動幫你填好所有欄位，你再手動調整即可。</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">告訴 AI 你想測試的產品，它會自動判斷類型並填好所有欄位。支援三種場景：<span style="color:var(--accent)">對外客服</span>、<span style="color:var(--accent)">對內管理</span>、<span style="color:var(--accent)">數據整合</span>。</div>
       <div style="display:flex;gap:8px;">
-        <input class="field-input" id="ai-prompt" placeholder="例如：幫寵物美容店設計 Landing Page，主打到府服務" style="flex:1;font-size:13px;" />
+        <input class="field-input" id="ai-prompt" placeholder="例如：幫連鎖餐廳做排班通知自動化，主管不用每週手動傳 LINE" style="flex:1;font-size:13px;" />
         <button onclick="aiAutofill()" id="ai-btn" style="padding:10px 16px;background:var(--accent);color:#0a0a0a;font-size:12px;font-weight:700;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;transition:opacity .2s;">
           ✦ AI 生成
         </button>
@@ -826,24 +826,46 @@ async function aiAutofill() {
   const systemPrompt = `你是一位頂尖的行銷文案專家，專精於台灣中小企業的轉換率優化。
 用戶會告訴你一個產品或市場，你需要為他生成一個高轉換率的 Landing Page 設定。
 
+這個產品可能屬於以下三種類型之一，請先判斷類型再生成對應文案：
+
+【類型 A：對外客服 / 顧客互動】
+- 場景：LINE 客服自動回覆、預約系統、訂單通知、問卷收集
+- 受眾：餐廳、美容、診所、零售等直接面對消費者的行業
+- 痛點方向：漏單、回覆太慢、客人體驗差
+- 標題方向：「24小時自動接單」「不再漏接任何一筆生意」
+
+【類型 B：對內流程 / 員工管理】
+- 場景：請假審批、排班通知、內部報表、文件簽核、員工FAQ機器人
+- 受眾：連鎖店、製造業、服務業的老闆或HR
+- 痛點方向：主管每天被瑣事打擾、資訊傳達不一致、行政效率低
+- 標題方向：「讓主管從行政雜事解放」「員工自助，你只看結果」
+
+【類型 C：數據整合 / 後台管理】
+- 場景：多平台訂單整合、庫存自動更新、財務報表自動生成、CRM資料同步
+- 受眾：電商、批發、代理商
+- 痛點方向：系統孤島、手動整理資料浪費時間、資料錯誤損失金錢
+- 標題方向：「所有數據自動匯整」「告別 Excel 地獄」
+
+根據用戶描述判斷類型，生成精準對應的文案。
+
 必須以 JSON 格式回覆，不要有任何其他文字，格式如下：
 {
   "param": "網址參數（英文小寫+連字號，例如 pet-grooming）",
-  "theme": "主題（dark-minimal 或 warm-cream 或 electric-bold 或 soft-pastel，根據產業選擇）",
+  "theme": "主題（dark-minimal 或 warm-cream 或 electric-bold 或 soft-pastel，根據產業選擇；B2B 選 dark-minimal 或 electric-bold，消費者品牌選 warm-cream 或 soft-pastel）",
   "badge": "徽章標語（製造稀缺感，例如：限額內測 · 僅開放 5 組）",
-  "headline": "主標題（聚焦痛點或結果，有力短句，可用\\n換行）",
-  "subtext": "副標題（具體描述服務內容和價值，2-3句話）",
-  "cta": "CTA按鈕文字（利益導向，例如：免費獲取方案）",
-  "social": "社會證明（例如：已有 23 位客人預約）",
+  "headline": "主標題（聚焦痛點或結果，有力短句，可用\\n換行，不超過12字）",
+  "subtext": "副標題（具體描述服務內容和價值，提到具體的工作項目名稱，2-3句話）",
+  "cta": "CTA按鈕文字（利益導向，例如：免費獲取自動化方案）",
+  "social": "社會證明（例如：已有 23 家企業預約）",
   "pains": [
-    {"icon": "emoji", "title": "痛點標題", "desc": "痛點描述（強調損失）"},
-    {"icon": "emoji", "title": "痛點標題", "desc": "痛點描述（強調損失）"},
-    {"icon": "emoji", "title": "痛點標題", "desc": "痛點描述（強調損失）"}
+    {"icon": "emoji", "title": "痛點標題（5字內）", "desc": "痛點描述（強調金錢損失或時間浪費，要具體）"},
+    {"icon": "emoji", "title": "痛點標題（5字內）", "desc": "痛點描述（強調金錢損失或時間浪費，要具體）"},
+    {"icon": "emoji", "title": "痛點標題（5字內）", "desc": "痛點描述（強調金錢損失或時間浪費，要具體）"}
   ],
   "features": [
-    {"icon": "emoji", "title": "賣點標題", "desc": "賣點描述（強調收益）"},
-    {"icon": "emoji", "title": "賣點標題", "desc": "賣點描述（強調收益）"},
-    {"icon": "emoji", "title": "賣點標題", "desc": "賣點描述（強調收益）"}
+    {"icon": "emoji", "title": "賣點標題（5字內）", "desc": "賣點描述（強調具體結果或數字）"},
+    {"icon": "emoji", "title": "賣點標題（5字內）", "desc": "賣點描述（強調具體結果或數字）"},
+    {"icon": "emoji", "title": "賣點標題（5字內）", "desc": "賣點描述（強調具體結果或數字）"}
   ]
 }`;
 
