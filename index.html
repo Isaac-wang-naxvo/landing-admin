@@ -323,12 +323,13 @@
           <option value="true">只看候補</option>
         </select>
       </div>
-      <div class="table-wrap">
-        <div class="table-head">
+      <div class="table-wrap" style="overflow-x:auto;">
+        <div class="table-head" style="grid-template-columns:1.2fr 80px 100px 1.5fr 1.2fr 120px;">
           <div class="th">聯絡方式</div>
           <div class="th">市場</div>
           <div class="th">類型</div>
-          <div class="th">來源</div>
+          <div class="th">最痛的問題</div>
+          <div class="th">身份</div>
           <div class="th">時間</div>
         </div>
         <div id="leads-table-body"></div>
@@ -656,11 +657,12 @@ function renderLeads() {
   body.innerHTML = filtered.map(l => {
     const date = new Date(l.created_at).toLocaleString('zh-TW', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' });
     return `
-      <div class="table-row">
+      <div class="table-row" style="grid-template-columns:1.2fr 80px 100px 1.5fr 1.2fr 120px;">
         <div class="td contact">${l.contact}</div>
         <div class="td"><span class="badge badge-param">${l.param_key || '—'}</span></div>
         <div class="td"><span class="badge ${l.is_waitlist ? 'badge-wait' : 'badge-lead'}">${l.is_waitlist ? '候補' : '預約'}</span></div>
-        <div class="td">${l.utm_source || '—'}</div>
+        <div class="td" style="font-size:11.5px;">${l.pain_choice || '—'}</div>
+        <div class="td" style="font-size:11.5px;">${l.role_choice || '—'}</div>
         <div class="td">${date}</div>
       </div>`;
   }).join('');
