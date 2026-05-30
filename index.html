@@ -5,119 +5,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Landing Kit 後台</title>
   <style>
-    /* ── Reset ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { font-size: 14px; }
     body { font-family: -apple-system, 'DM Sans', sans-serif; background: #0a0a0a; color: #e0e0e0; min-height: 100vh; }
     button { cursor: pointer; font-family: inherit; }
     input, textarea, select { font-family: inherit; }
-    a { text-decoration: none; }
-
-    /* ── Variables ── */
     :root {
-      --bg:      #0a0a0a;
-      --bg2:     #111;
-      --bg3:     #1a1a1a;
-      --border:  rgba(255,255,255,.08);
-      --border2: rgba(255,255,255,.14);
-      --text:    #e0e0e0;
-      --text2:   #888;
-      --text3:   #444;
-      --accent:  #d4ff47;
-      --red:     #ef4444;
-      --green:   #22c55e;
-      --radius:  10px;
+      --bg: #0a0a0a; --bg2: #111; --bg3: #1a1a1a;
+      --border: rgba(255,255,255,.08); --border2: rgba(255,255,255,.14);
+      --text: #e0e0e0; --text2: #888; --text3: #444;
+      --accent: #d4ff47; --red: #ef4444; --green: #22c55e; --radius: 10px;
     }
-
-    /* ── Login screen ── */
-    .login-screen {
-      display: flex; align-items: center; justify-content: center;
-      min-height: 100vh; padding: 20px;
-    }
-    .login-card {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: 16px; padding: 40px 32px; width: 100%; max-width: 360px;
-      text-align: center;
-    }
+    .login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+    .login-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 40px 32px; width: 100%; max-width: 360px; text-align: center; }
     .login-logo { font-size: 32px; margin-bottom: 8px; }
     .login-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
-    .login-sub   { font-size: 13px; color: var(--text2); margin-bottom: 28px; }
-    .login-input {
-      width: 100%; padding: 12px 14px; background: var(--bg3);
-      border: 1px solid var(--border); border-radius: var(--radius);
-      font-size: 14px; color: var(--text); outline: none; margin-bottom: 10px;
-      transition: border-color .2s;
-    }
+    .login-sub { font-size: 13px; color: var(--text2); margin-bottom: 28px; }
+    .login-input { width: 100%; padding: 12px 14px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; color: var(--text); outline: none; margin-bottom: 10px; transition: border-color .2s; }
     .login-input:focus { border-color: var(--border2); }
-    .login-btn {
-      width: 100%; padding: 12px; background: var(--accent); color: #0a0a0a;
-      font-size: 14px; font-weight: 700; border: none; border-radius: var(--radius);
-      transition: opacity .2s;
-    }
+    .login-btn { width: 100%; padding: 12px; background: var(--accent); color: #0a0a0a; font-size: 14px; font-weight: 700; border: none; border-radius: var(--radius); transition: opacity .2s; }
     .login-btn:hover { opacity: .85; }
     .login-error { color: var(--red); font-size: 12px; margin-top: 8px; display: none; }
-
-    /* ── App shell ── */
     .app { display: none; }
     .app.visible { display: flex; min-height: 100vh; }
-
-    /* ── Sidebar ── */
-    .sidebar {
-      width: 220px; flex-shrink: 0;
-      background: var(--bg2); border-right: 1px solid var(--border);
-      display: flex; flex-direction: column; padding: 20px 12px;
-      position: sticky; top: 0; height: 100vh; overflow-y: auto;
-    }
+    .sidebar { width: 220px; flex-shrink: 0; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 12px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
     .sidebar-logo { font-size: 13px; font-weight: 700; color: var(--accent); padding: 6px 10px; margin-bottom: 20px; letter-spacing: .05em; }
-    .nav-item {
-      display: flex; align-items: center; gap: 9px;
-      padding: 9px 10px; border-radius: 8px; font-size: 13px;
-      color: var(--text2); cursor: pointer; transition: all .15s; border: none;
-      background: transparent; width: 100%; text-align: left; margin-bottom: 2px;
-    }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 8px; font-size: 13px; color: var(--text2); cursor: pointer; transition: all .15s; border: none; background: transparent; width: 100%; text-align: left; margin-bottom: 2px; }
     .nav-item:hover { background: var(--bg3); color: var(--text); }
     .nav-item.active { background: var(--bg3); color: var(--text); font-weight: 600; }
     .nav-icon { font-size: 16px; width: 20px; text-align: center; }
     .sidebar-bottom { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border); }
-    .logout-btn {
-      display: flex; align-items: center; gap: 8px;
-      padding: 8px 10px; border-radius: 8px; font-size: 12px;
-      color: var(--text3); cursor: pointer; border: none; background: transparent;
-      width: 100%; transition: color .15s;
-    }
+    .logout-btn { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; font-size: 12px; color: var(--text3); cursor: pointer; border: none; background: transparent; width: 100%; transition: color .15s; }
     .logout-btn:hover { color: var(--red); }
-
-    /* ── Main content ── */
     .main { flex: 1; overflow-y: auto; }
     .page { display: none; padding: 28px 32px; max-width: 900px; }
     .page.active { display: block; }
     .page-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-    .page-sub    { font-size: 13px; color: var(--text2); margin-bottom: 24px; }
-
-    /* ── Stats row ── */
+    .page-sub { font-size: 13px; color: var(--text2); margin-bottom: 24px; }
     .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 12px; margin-bottom: 28px; }
-    .stat-card {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 18px 20px;
-    }
-    .stat-val  { font-size: 28px; font-weight: 700; color: var(--text); line-height: 1; margin-bottom: 4px; }
-    .stat-label{ font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: .06em; }
-
-    /* ── Product list ── */
+    .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
+    .stat-val { font-size: 28px; font-weight: 700; color: var(--text); line-height: 1; margin-bottom: 4px; }
+    .stat-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: .06em; }
     .product-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-    .product-card {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 16px 18px;
-      display: flex; align-items: center; gap: 16px;
-      transition: border-color .15s;
-    }
+    .product-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; display: flex; align-items: center; gap: 16px; transition: border-color .15s; }
     .product-card:hover { border-color: var(--border2); }
-    .product-badge {
-      background: var(--bg3); border: 1px solid var(--border);
-      border-radius: 8px; padding: 8px 12px; font-size: 11px;
-      font-weight: 700; color: var(--accent); letter-spacing: .04em;
-      white-space: nowrap;
-    }
+    .product-badge { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: .04em; white-space: nowrap; }
     .product-info { flex: 1; min-width: 0; }
     .product-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
     .product-meta { font-size: 12px; color: var(--text2); }
@@ -125,132 +57,66 @@
     .slot-pct { display: inline-block; width: 60px; height: 4px; background: var(--bg3); border-radius: 100px; vertical-align: middle; margin: 0 6px; }
     .slot-fill { height: 100%; background: var(--accent); border-radius: 100px; }
     .product-actions { display: flex; gap: 6px; }
-    .btn-sm {
-      padding: 6px 14px; border-radius: 7px; font-size: 12px; font-weight: 600;
-      border: 1px solid var(--border); background: transparent; color: var(--text2);
-      transition: all .15s; cursor: pointer;
-    }
+    .btn-sm { padding: 6px 14px; border-radius: 7px; font-size: 12px; font-weight: 600; border: 1px solid var(--border); background: transparent; color: var(--text2); transition: all .15s; cursor: pointer; }
     .btn-sm:hover { border-color: var(--border2); color: var(--text); }
     .btn-sm.danger:hover { border-color: var(--red); color: var(--red); }
-    .btn-primary {
-      padding: 10px 20px; border-radius: var(--radius); font-size: 13px; font-weight: 700;
-      background: var(--accent); color: #0a0a0a; border: none;
-      transition: opacity .15s; cursor: pointer;
-    }
+    .btn-primary { padding: 10px 20px; border-radius: var(--radius); font-size: 13px; font-weight: 700; background: var(--accent); color: #0a0a0a; border: none; transition: opacity .15s; cursor: pointer; }
     .btn-primary:hover { opacity: .85; }
-    .btn-secondary {
-      padding: 10px 20px; border-radius: var(--radius); font-size: 13px; font-weight: 600;
-      background: transparent; color: var(--text2);
-      border: 1px solid var(--border); transition: all .15s; cursor: pointer;
-    }
+    .btn-secondary { padding: 10px 20px; border-radius: var(--radius); font-size: 13px; font-weight: 600; background: transparent; color: var(--text2); border: 1px solid var(--border); transition: all .15s; cursor: pointer; }
     .btn-secondary:hover { border-color: var(--border2); color: var(--text); }
-
-    /* ── Modal ── */
-    .modal-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,.7); z-index: 100;
-      align-items: flex-start; justify-content: center;
-      padding: 40px 20px; overflow-y: auto;
-    }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 100; align-items: flex-start; justify-content: center; padding: 40px 20px; overflow-y: auto; }
     .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: 16px; padding: 28px; width: 100%; max-width: 580px;
-      position: relative;
-    }
+    .modal { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 28px; width: 100%; max-width: 620px; position: relative; }
     .modal-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 20px; }
-    .modal-close {
-      position: absolute; top: 16px; right: 16px;
-      background: transparent; border: none; color: var(--text2);
-      font-size: 20px; cursor: pointer; line-height: 1;
-    }
+    .modal-close { position: absolute; top: 16px; right: 16px; background: transparent; border: none; color: var(--text2); font-size: 20px; cursor: pointer; line-height: 1; }
     .modal-close:hover { color: var(--text); }
-
-    /* ── Form fields ── */
     .field-group { margin-bottom: 14px; }
     .field-label { font-size: 11.5px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; display: block; }
-    .field-input, .field-select, .field-textarea {
-      width: 100%; padding: 10px 12px;
-      background: var(--bg3); border: 1px solid var(--border);
-      border-radius: 8px; font-size: 13px; color: var(--text); outline: none;
-      transition: border-color .2s;
-    }
+    .field-input, .field-select, .field-textarea { width: 100%; padding: 10px 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; color: var(--text); outline: none; transition: border-color .2s; }
     .field-input:focus, .field-select:focus, .field-textarea:focus { border-color: var(--border2); }
     .field-textarea { min-height: 72px; resize: vertical; line-height: 1.5; }
     .field-select { appearance: none; cursor: pointer; }
     .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .field-hint { font-size: 11px; color: var(--text3); margin-top: 4px; }
-
     .pain-row { display: grid; grid-template-columns: 44px 1fr 2fr; gap: 8px; margin-bottom: 8px; align-items: center; }
     .pain-row input { padding: 8px 10px; }
-
-    .section-label {
-      font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
-      color: var(--text3); margin: 20px 0 10px; padding-bottom: 6px;
-      border-bottom: 1px solid var(--border);
-    }
+    .option-row { display: grid; grid-template-columns: 1fr 24px; gap: 8px; margin-bottom: 6px; align-items: center; }
+    .option-row input { padding: 8px 10px; }
+    .btn-icon { background: transparent; border: 1px solid var(--border); color: var(--text3); border-radius: 6px; width: 24px; height: 34px; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+    .btn-icon:hover { border-color: var(--red); color: var(--red); }
+    .btn-add-option { background: transparent; border: 1px dashed var(--border2); color: var(--text3); border-radius: 8px; padding: 7px 12px; font-size: 12px; cursor: pointer; width: 100%; margin-top: 4px; transition: all .15s; }
+    .btn-add-option:hover { border-color: var(--accent); color: var(--accent); }
+    .section-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); margin: 20px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
     .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px; }
-
-    /* ── Leads table ── */
     .table-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-    .table-head { display: grid; grid-template-columns: 1fr 100px 120px 100px 140px; gap: 0; background: var(--bg3); border-bottom: 1px solid var(--border); }
     .th { padding: 10px 14px; font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; }
-    .table-row { display: grid; grid-template-columns: 1fr 100px 120px 100px 140px; border-bottom: 1px solid var(--border); transition: background .12s; }
     .table-row:last-child { border-bottom: none; }
     .table-row:hover { background: var(--bg3); }
     .td { padding: 11px 14px; font-size: 12.5px; color: var(--text2); display: flex; align-items: center; overflow: hidden; }
     .td.contact { color: var(--text); font-weight: 500; }
-    .badge {
-      display: inline-block; padding: 2px 8px; border-radius: 100px;
-      font-size: 10.5px; font-weight: 700;
-    }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: 10.5px; font-weight: 700; }
     .badge-wait { background: rgba(239,68,68,.12); color: #ef4444; }
     .badge-lead { background: rgba(34,197,94,.12); color: #22c55e; }
     .badge-param { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); }
-
     .empty-state { text-align: center; padding: 48px 20px; color: var(--text3); font-size: 13px; }
-    .empty-icon  { font-size: 36px; margin-bottom: 10px; }
-
-    /* ── URL preview ── */
-    .url-preview {
-      background: var(--bg3); border: 1px solid var(--border);
-      border-radius: 8px; padding: 10px 14px; font-size: 12px;
-      color: var(--accent); font-family: monospace; margin-top: 6px;
-      display: flex; align-items: center; justify-content: space-between; gap: 8px;
-    }
+    .empty-icon { font-size: 36px; margin-bottom: 10px; }
+    .url-preview { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--accent); font-family: monospace; margin-top: 6px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
     .url-copy { font-size: 11px; color: var(--text2); cursor: pointer; border: 1px solid var(--border); background: transparent; padding: 3px 10px; border-radius: 6px; }
     .url-copy:hover { color: var(--text); }
-
-    /* ── Toast ── */
-    .toast {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-      background: var(--bg2); border: 1px solid var(--border);
-      color: var(--text); font-size: 13px; font-weight: 500;
-      padding: 10px 20px; border-radius: 100px;
-      opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 999;
-    }
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg2); border: 1px solid var(--border); color: var(--text); font-size: 13px; font-weight: 500; padding: 10px 20px; border-radius: 100px; opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 999; }
     .toast.show { opacity: 1; }
-
-    /* ── Loading ── */
     .loading { text-align: center; padding: 40px; color: var(--text3); font-size: 13px; }
-
     @media (max-width: 640px) {
       .sidebar { display: none; }
       .page { padding: 20px 16px; }
       .field-row { grid-template-columns: 1fr; }
-      .table-head, .table-row { grid-template-columns: 1fr 80px 100px; }
-      .th:nth-child(4), .th:nth-child(5), .td:nth-child(4), .td:nth-child(5) { display: none; }
     }
   </style>
 </head>
 <body>
 
-<!-- ── Toast ── -->
 <div class="toast" id="toast"></div>
 
-<!-- ════════════════════════════════════════
-     LOGIN SCREEN
-     ════════════════════════════════════════ -->
 <div class="login-screen" id="login-screen">
   <div class="login-card">
     <div class="login-logo">🚀</div>
@@ -262,54 +128,34 @@
   </div>
 </div>
 
-<!-- ════════════════════════════════════════
-     APP
-     ════════════════════════════════════════ -->
 <div class="app" id="app">
-
-  <!-- Sidebar -->
   <div class="sidebar">
     <div class="sidebar-logo">⚡ LANDING KIT</div>
-    <button class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard">
-      <span class="nav-icon">📊</span> 數據總覽
-    </button>
-    <button class="nav-item" onclick="showPage('products')" id="nav-products">
-      <span class="nav-icon">🗂</span> 產品管理
-    </button>
-    <button class="nav-item" onclick="showPage('leads')" id="nav-leads">
-      <span class="nav-icon">📋</span> 名單管理
-    </button>
+    <button class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard"><span class="nav-icon">📊</span> 數據總覽</button>
+    <button class="nav-item" onclick="showPage('products')" id="nav-products"><span class="nav-icon">🗂</span> 產品管理</button>
+    <button class="nav-item" onclick="showPage('leads')" id="nav-leads"><span class="nav-icon">📋</span> 名單管理</button>
     <div class="sidebar-bottom">
       <button class="logout-btn" onclick="doLogout()">🚪 登出</button>
     </div>
   </div>
 
-  <!-- Main -->
   <div class="main">
-
-    <!-- ── Dashboard ── -->
     <div class="page active" id="page-dashboard">
       <div class="page-title">數據總覽</div>
       <div class="page-sub">所有市場的即時驗證數據</div>
-      <div class="stats-row" id="stats-row">
-        <div class="loading">載入中...</div>
-      </div>
+      <div class="stats-row" id="stats-row"><div class="loading">載入中...</div></div>
       <div id="dashboard-breakdown"></div>
     </div>
 
-    <!-- ── Products ── -->
     <div class="page" id="page-products">
       <div class="page-title">產品管理</div>
       <div class="page-sub">新增或編輯不同市場的 Landing Page 設定</div>
       <div style="margin-bottom:16px">
         <button class="btn-primary" onclick="openModal()">＋ 新增產品</button>
       </div>
-      <div class="product-list" id="product-list">
-        <div class="loading">載入中...</div>
-      </div>
+      <div class="product-list" id="product-list"><div class="loading">載入中...</div></div>
     </div>
 
-    <!-- ── Leads ── -->
     <div class="page" id="page-leads">
       <div class="page-title">名單管理</div>
       <div class="page-sub">所有填表的潛在客戶資料</div>
@@ -324,38 +170,29 @@
         </select>
       </div>
       <div class="table-wrap" style="overflow-x:auto;">
-        <div class="table-head" style="grid-template-columns:1.2fr 80px 100px 1.5fr 1.2fr 120px;">
-          <div class="th">聯絡方式</div>
-          <div class="th">市場</div>
-          <div class="th">類型</div>
-          <div class="th">最痛的問題</div>
-          <div class="th">身份</div>
-          <div class="th">時間</div>
+        <div style="display:grid;grid-template-columns:1.2fr 80px 100px 1.5fr 1.2fr 120px;background:var(--bg3);border-bottom:1px solid var(--border);">
+          <div class="th">聯絡方式</div><div class="th">市場</div><div class="th">類型</div>
+          <div class="th">最痛的問題</div><div class="th">身份</div><div class="th">時間</div>
         </div>
         <div id="leads-table-body"></div>
       </div>
     </div>
+  </div>
+</div>
 
-  </div><!-- /main -->
-</div><!-- /app -->
-
-<!-- ════════════════════════════════════════
-     PRODUCT MODAL
-     ════════════════════════════════════════ -->
+<!-- Modal -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">×</button>
     <div class="modal-title" id="modal-title">新增產品</div>
 
-    <!-- ── AI 自動填寫區塊 ── -->
+    <!-- AI 自動填寫 -->
     <div style="background:rgba(212,255,71,.05);border:1px solid rgba(212,255,71,.2);border-radius:10px;padding:14px 16px;margin-bottom:20px;">
       <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:8px;">✦ AI 自動填寫</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">告訴 AI 你想測試的產品，它會自動判斷類型並填好所有欄位。支援三種場景：<span style="color:var(--accent)">對外客服</span>、<span style="color:var(--accent)">對內管理</span>、<span style="color:var(--accent)">數據整合</span>。</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">告訴 AI 你想測試的產品，它會自動填好所有欄位，包含表單問題選項。</div>
       <div style="display:flex;gap:8px;">
-        <input class="field-input" id="ai-prompt" placeholder="例如：幫連鎖餐廳做排班通知自動化，主管不用每週手動傳 LINE" style="flex:1;font-size:13px;" />
-        <button onclick="aiAutofill()" id="ai-btn" style="padding:10px 16px;background:var(--accent);color:#0a0a0a;font-size:12px;font-weight:700;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;transition:opacity .2s;">
-          ✦ AI 生成
-        </button>
+        <input class="field-input" id="ai-prompt" placeholder="例如：幫美甲工作室做爽約空檔自動補位系統" style="flex:1;font-size:13px;" />
+        <button onclick="aiAutofill()" id="ai-btn" style="padding:10px 16px;background:var(--accent);color:#0a0a0a;font-size:12px;font-weight:700;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;">✦ AI 生成</button>
       </div>
       <div id="ai-status" style="font-size:11px;color:var(--text3);margin-top:6px;display:none;"></div>
     </div>
@@ -363,8 +200,8 @@
     <div class="field-row">
       <div class="field-group">
         <label class="field-label">網址參數 (?p=)</label>
-        <input class="field-input" id="f-param" placeholder="ai-auto" oninput="updateUrlPreview()" />
-        <div class="field-hint">只能用英文和 -，例如 nail-salon</div>
+        <input class="field-input" id="f-param" placeholder="clinic-ai" oninput="updateUrlPreview()" />
+        <div class="field-hint">只能用英文和 -</div>
       </div>
       <div class="field-group">
         <label class="field-label">主題樣式</label>
@@ -386,79 +223,43 @@
     </div>
 
     <div class="section-label">產品文案</div>
-
-    <div class="field-group">
-      <label class="field-label">徽章標語</label>
-      <input class="field-input" id="f-badge" placeholder="限額內測 · 僅開放 30 組" />
-    </div>
-    <div class="field-group">
-      <label class="field-label">主標題（\n 可換行）</label>
-      <input class="field-input" id="f-headline" placeholder="每週省下 10 小時\n不需要工程師" />
-    </div>
-    <div class="field-group">
-      <label class="field-label">副標題說明</label>
-      <textarea class="field-textarea" id="f-subtext" placeholder="詳細描述你的產品價值..."></textarea>
-    </div>
+    <div class="field-group"><label class="field-label">徽章標語</label><input class="field-input" id="f-badge" placeholder="限額內測 · 僅開放 5 組" /></div>
+    <div class="field-group"><label class="field-label">主標題（\n 可換行）</label><input class="field-input" id="f-headline" placeholder="每週省下 10 小時\n不需要工程師" /></div>
+    <div class="field-group"><label class="field-label">副標題說明</label><textarea class="field-textarea" id="f-subtext" placeholder="詳細描述你的產品價值..."></textarea></div>
     <div class="field-row">
-      <div class="field-group">
-        <label class="field-label">主要 CTA 按鈕</label>
-        <input class="field-input" id="f-cta" placeholder="搶先卡位名額" />
-      </div>
-      <div class="field-group">
-        <label class="field-label">社會證明文字</label>
-        <input class="field-input" id="f-social" placeholder="47 家企業正在候補" />
-      </div>
+      <div class="field-group"><label class="field-label">主要 CTA 按鈕</label><input class="field-input" id="f-cta" placeholder="免費申請封測名額" /></div>
+      <div class="field-group"><label class="field-label">社會證明文字</label><input class="field-input" id="f-social" placeholder="已有 47 家企業正在候補" /></div>
     </div>
 
     <div class="section-label">名額設定</div>
     <div class="field-row">
-      <div class="field-group">
-        <label class="field-label">總名額</label>
-        <input class="field-input" id="f-total" type="number" value="30" min="1" />
-      </div>
-      <div class="field-group">
-        <label class="field-label">已使用名額</label>
-        <input class="field-input" id="f-taken" type="number" value="0" min="0" />
-      </div>
+      <div class="field-group"><label class="field-label">總名額</label><input class="field-input" id="f-total" type="number" value="5" min="1" /></div>
+      <div class="field-group"><label class="field-label">已使用名額</label><input class="field-input" id="f-taken" type="number" value="0" min="0" /></div>
     </div>
 
     <div class="section-label">三個痛點</div>
     <div id="pain-editor">
-      <div class="pain-row">
-        <input class="field-input" id="p0-icon" placeholder="😤" value="😤" />
-        <input class="field-input" id="p0-title" placeholder="痛點標題" />
-        <input class="field-input" id="p0-desc" placeholder="痛點描述" />
-      </div>
-      <div class="pain-row">
-        <input class="field-input" id="p1-icon" placeholder="💸" value="💸" />
-        <input class="field-input" id="p1-title" placeholder="痛點標題" />
-        <input class="field-input" id="p1-desc" placeholder="痛點描述" />
-      </div>
-      <div class="pain-row">
-        <input class="field-input" id="p2-icon" placeholder="🔄" value="🔄" />
-        <input class="field-input" id="p2-title" placeholder="痛點標題" />
-        <input class="field-input" id="p2-desc" placeholder="痛點描述" />
-      </div>
+      <div class="pain-row"><input class="field-input" id="p0-icon" placeholder="😤" value="😤" /><input class="field-input" id="p0-title" placeholder="痛點標題" /><input class="field-input" id="p0-desc" placeholder="痛點描述" /></div>
+      <div class="pain-row"><input class="field-input" id="p1-icon" placeholder="💸" value="💸" /><input class="field-input" id="p1-title" placeholder="痛點標題" /><input class="field-input" id="p1-desc" placeholder="痛點描述" /></div>
+      <div class="pain-row"><input class="field-input" id="p2-icon" placeholder="🔄" value="🔄" /><input class="field-input" id="p2-title" placeholder="痛點標題" /><input class="field-input" id="p2-desc" placeholder="痛點描述" /></div>
     </div>
 
     <div class="section-label">三個賣點</div>
     <div id="feature-editor">
-      <div class="pain-row">
-        <input class="field-input" id="f0-icon" placeholder="⚡" value="⚡" />
-        <input class="field-input" id="f0-title" placeholder="賣點標題" />
-        <input class="field-input" id="f0-desc" placeholder="賣點描述" />
-      </div>
-      <div class="pain-row">
-        <input class="field-input" id="f1-icon" placeholder="🧩" value="🧩" />
-        <input class="field-input" id="f1-title" placeholder="賣點標題" />
-        <input class="field-input" id="f1-desc" placeholder="賣點描述" />
-      </div>
-      <div class="pain-row">
-        <input class="field-input" id="f2-icon" placeholder="🛡️" value="🛡️" />
-        <input class="field-input" id="f2-title" placeholder="賣點標題" />
-        <input class="field-input" id="f2-desc" placeholder="賣點描述" />
-      </div>
+      <div class="pain-row"><input class="field-input" id="f0-icon" placeholder="⚡" value="⚡" /><input class="field-input" id="f0-title" placeholder="賣點標題" /><input class="field-input" id="f0-desc" placeholder="賣點描述" /></div>
+      <div class="pain-row"><input class="field-input" id="f1-icon" placeholder="🧩" value="🧩" /><input class="field-input" id="f1-title" placeholder="賣點標題" /><input class="field-input" id="f1-desc" placeholder="賣點描述" /></div>
+      <div class="pain-row"><input class="field-input" id="f2-icon" placeholder="🛡️" value="🛡️" /><input class="field-input" id="f2-title" placeholder="賣點標題" /><input class="field-input" id="f2-desc" placeholder="賣點描述" /></div>
     </div>
+
+    <!-- ── 新增：表單痛點選項 ── -->
+    <div class="section-label">表單問題一：最頭痛的問題（選項）</div>
+    <div id="pain-options-editor"></div>
+    <button class="btn-add-option" onclick="addPainOption()">＋ 新增選項</button>
+
+    <!-- ── 新增：表單身份選項 ── -->
+    <div class="section-label">表單問題二：填表者身份（選項）</div>
+    <div id="role-options-editor"></div>
+    <button class="btn-add-option" onclick="addRoleOption()">＋ 新增選項</button>
 
     <div class="modal-footer">
       <button class="btn-secondary" onclick="closeModal()">取消</button>
@@ -467,35 +268,29 @@
   </div>
 </div>
 
-<!-- ════════════════════════════════════════
-     CONFIG — 只需要改這裡
-     ════════════════════════════════════════ -->
 <script>
-  const ADMIN_PASSWORD  = "isaac2025";   // ← 改成你的密碼
-  const SUPABASE_URL    = "https://hquzchzcoygnmninemvp.supabase.co";
-  const SUPABASE_ANON   = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhxdXpjaHpjb3lnbm1uaW5lbXZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNzIwMjQsImV4cCI6MjA5NDc0ODAyNH0.igTevzpprg0W_tb3FgcVt5gILcONWMG1jYAW_p7GhYk";
-  const FRONTEND_BASE   = "https://isaac-wang-naxvo.github.io/landing-page/";
+  const ADMIN_PASSWORD = "isaac2025";
+  const SUPABASE_URL   = "https://hquzchzcoygnmninemvp.supabase.co";
+  const SUPABASE_ANON  = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhxdXpjaHpjb3lnbm1uaW5lbXZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNzIwMjQsImV4cCI6MjA5NDc0ODAyNH0.igTevzpprg0W_tb3FgcVt5gILcONWMG1jYAW_p7GhYk";
+  const FRONTEND_BASE  = "https://isaac-wang-naxvo.github.io/landing-page/";
+  const EDGE_FN_URL    = `${SUPABASE_URL}/functions/v1/ai-autofill`;
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script>
-// ── Init ──────────────────────────────────────────────────
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-let allLeads = [];
-let allConfigs = [];
-let editingId = null;
+let allLeads = [], allConfigs = [], editingId = null;
 
-// ── Toast ─────────────────────────────────────────────────
+// ── Toast ──────────────────────────────────────────────────
 function toast(msg, isError = false) {
   const t = document.getElementById('toast');
   t.textContent = msg;
-  t.style.borderColor = isError ? 'rgba(239,68,68,.3)' : 'rgba(255,255,255,.08)';
   t.style.color = isError ? '#ef4444' : '#e0e0e0';
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// ── Login ─────────────────────────────────────────────────
+// ── Login ──────────────────────────────────────────────────
 function doLogin() {
   const pw = document.getElementById('pw-input').value;
   if (pw === ADMIN_PASSWORD) {
@@ -507,19 +302,14 @@ function doLogin() {
     document.getElementById('login-error').style.display = 'block';
   }
 }
-document.getElementById('pw-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doLogin();
-});
-function doLogout() {
-  sessionStorage.removeItem('lk_auth');
-  location.reload();
-}
+document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+function doLogout() { sessionStorage.removeItem('lk_auth'); location.reload(); }
 if (sessionStorage.getItem('lk_auth') === '1') {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').classList.add('visible');
 }
 
-// ── Navigation ────────────────────────────────────────────
+// ── Navigation ─────────────────────────────────────────────
 function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -528,59 +318,45 @@ function showPage(name) {
   if (name === 'leads') renderLeads();
 }
 
-// ── Load all data ─────────────────────────────────────────
+// ── Load ───────────────────────────────────────────────────
 async function loadAll() {
   await Promise.all([loadConfigs(), loadLeads()]);
   renderDashboard();
   renderProducts();
 }
-
 async function loadConfigs() {
-  const { data, error } = await sb.from('landing_configs').select('*').order('created_at', { ascending: false });
-  if (error) { toast('載入產品失敗', true); return; }
+  const { data } = await sb.from('landing_configs').select('*').order('created_at', { ascending: false });
   allConfigs = data || [];
 }
-
 async function loadLeads() {
-  const { data, error } = await sb.from('leads').select('*').order('created_at', { ascending: false });
-  if (error) { toast('載入名單失敗', true); return; }
+  const { data } = await sb.from('leads').select('*').order('created_at', { ascending: false });
   allLeads = data || [];
 }
 
-// ── Dashboard ─────────────────────────────────────────────
+// ── Dashboard ──────────────────────────────────────────────
 async function renderDashboard() {
   const { data: views } = await sb.from('page_views').select('param_key');
   const viewMap = {};
   (views || []).forEach(v => { viewMap[v.param_key] = (viewMap[v.param_key] || 0) + 1; });
-
   const totalViews = Object.values(viewMap).reduce((a,b) => a+b, 0);
   const totalLeads = allLeads.filter(l => !l.is_waitlist).length;
   const totalWait  = allLeads.filter(l => l.is_waitlist).length;
   const overallRate = totalViews > 0 ? ((totalLeads / totalViews) * 100).toFixed(1) : '0.0';
-
   document.getElementById('stats-row').innerHTML = `
     <div class="stat-card"><div class="stat-val">${totalViews}</div><div class="stat-label">總曝光次數</div></div>
     <div class="stat-card"><div class="stat-val">${totalLeads}</div><div class="stat-label">有效預約</div></div>
     <div class="stat-card"><div class="stat-val">${totalWait}</div><div class="stat-label">候補名單</div></div>
-    <div class="stat-card"><div class="stat-val" style="color:var(--accent)">${overallRate}%</div><div class="stat-label">整體轉換率</div></div>
-  `;
-
+    <div class="stat-card"><div class="stat-val" style="color:var(--accent)">${overallRate}%</div><div class="stat-label">整體轉換率</div></div>`;
   const allKeys = [...new Set([...allConfigs.map(c => c.param_key), ...Object.keys(viewMap)])];
-  if (allKeys.length === 0) {
-    document.getElementById('dashboard-breakdown').innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div>還沒有任何市場數據</div>`;
-    return;
-  }
-
-  let rows = allKeys.map(key => {
-    const cfg    = allConfigs.find(c => c.param_key === key);
-    const v      = viewMap[key] || 0;
-    const leads  = allLeads.filter(l => l.param_key === key && !l.is_waitlist).length;
-    const wait   = allLeads.filter(l => l.param_key === key && l.is_waitlist).length;
-    const rate   = v > 0 ? ((leads / v) * 100).toFixed(1) : '0.0';
-    const name   = cfg?.headline?.split('\n')[0] || key;
-    return { key, name, v, leads, wait, rate: parseFloat(rate) };
+  if (!allKeys.length) { document.getElementById('dashboard-breakdown').innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div>還沒有任何市場數據</div>`; return; }
+  const rows = allKeys.map(key => {
+    const cfg = allConfigs.find(c => c.param_key === key);
+    const v = viewMap[key] || 0;
+    const leads = allLeads.filter(l => l.param_key === key && !l.is_waitlist).length;
+    const wait  = allLeads.filter(l => l.param_key === key && l.is_waitlist).length;
+    const rate  = v > 0 ? ((leads / v) * 100).toFixed(1) : '0.0';
+    return { key, name: cfg?.headline?.split('\n')[0] || key, v, leads, wait, rate: parseFloat(rate) };
   }).sort((a,b) => b.rate - a.rate);
-
   document.getElementById('dashboard-breakdown').innerHTML = `
     <div style="font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;">各市場分析</div>
     <div class="table-wrap">
@@ -601,86 +377,115 @@ async function renderDashboard() {
     </div>`;
 }
 
-// ── Products ──────────────────────────────────────────────
+// ── Products ───────────────────────────────────────────────
 function renderProducts() {
   const list = document.getElementById('product-list');
-  if (allConfigs.length === 0) {
-    list.innerHTML = `<div class="empty-state"><div class="empty-icon">🗂</div>還沒有產品，點上方按鈕新增</div>`;
-    return;
-  }
+  if (!allConfigs.length) { list.innerHTML = `<div class="empty-state"><div class="empty-icon">🗂</div>還沒有產品，點上方按鈕新增</div>`; return; }
   list.innerHTML = allConfigs.map(c => {
-    const remaining = (c.slots_total || 30) - (c.slots_taken || 0);
-    const pct = Math.min(100, Math.round(((c.slots_taken||0) / (c.slots_total||30)) * 100));
+    const remaining = (c.slots_total||5) - (c.slots_taken||0);
+    const pct = Math.min(100, Math.round(((c.slots_taken||0)/(c.slots_total||5))*100));
     const leads = allLeads.filter(l => l.param_key === c.param_key && !l.is_waitlist).length;
-    return `
-      <div class="product-card">
-        <div class="product-badge">?p=${c.param_key}</div>
-        <div class="product-info">
-          <div class="product-name">${c.headline?.split('\n')[0] || '未命名產品'}</div>
-          <div class="product-meta">${c.theme} · 預約 ${leads} 筆</div>
-        </div>
-        <div class="product-slot">
-          <span>${c.slots_taken||0}/${c.slots_total||30}</span>
-          <span class="slot-pct"><span class="slot-fill" style="width:${pct}%"></span></span>
-          剩 ${remaining}
-        </div>
-        <div class="product-actions">
-          <button class="btn-sm" onclick="copyFrontendUrl('${c.param_key}')">🔗</button>
-          <button class="btn-sm" onclick="editProduct('${c.id}')">編輯</button>
-          <button class="btn-sm danger" onclick="deleteProduct('${c.id}')">刪除</button>
-        </div>
-      </div>`;
+    return `<div class="product-card">
+      <div class="product-badge">?p=${c.param_key}</div>
+      <div class="product-info">
+        <div class="product-name">${c.headline?.split('\n')[0] || '未命名產品'}</div>
+        <div class="product-meta">${c.theme} · 預約 ${leads} 筆</div>
+      </div>
+      <div class="product-slot">
+        <span>${c.slots_taken||0}/${c.slots_total||5}</span>
+        <span class="slot-pct"><span class="slot-fill" style="width:${pct}%"></span></span>
+        剩 ${remaining}
+      </div>
+      <div class="product-actions">
+        <button class="btn-sm" onclick="copyFrontendUrl('${c.param_key}')">🔗</button>
+        <button class="btn-sm" onclick="editProduct('${c.id}')">編輯</button>
+        <button class="btn-sm danger" onclick="deleteProduct('${c.id}')">刪除</button>
+      </div>
+    </div>`;
   }).join('');
 }
 
-// ── Leads ─────────────────────────────────────────────────
+// ── Leads ──────────────────────────────────────────────────
 function renderLeads() {
   const filterKey  = document.getElementById('leads-filter').value;
   const filterType = document.getElementById('leads-type').value;
-
-  // update filter options
   const sel = document.getElementById('leads-filter');
   const keys = [...new Set(allLeads.map(l => l.param_key).filter(Boolean))];
   const current = sel.value;
-  sel.innerHTML = '<option value="">全部市場</option>' +
-    keys.map(k => `<option value="${k}" ${k===current?'selected':''}>${k}</option>`).join('');
-
+  sel.innerHTML = '<option value="">全部市場</option>' + keys.map(k => `<option value="${k}" ${k===current?'selected':''}>${k}</option>`).join('');
   let filtered = allLeads;
   if (filterKey)  filtered = filtered.filter(l => l.param_key === filterKey);
   if (filterType !== '') filtered = filtered.filter(l => String(l.is_waitlist) === filterType);
-
   const body = document.getElementById('leads-table-body');
-  if (filtered.length === 0) {
-    body.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div>還沒有名單資料</div>`;
-    return;
-  }
+  if (!filtered.length) { body.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div>還沒有名單資料</div>`; return; }
   body.innerHTML = filtered.map(l => {
     const date = new Date(l.created_at).toLocaleString('zh-TW', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' });
-    return `
-      <div class="table-row" style="grid-template-columns:1.2fr 80px 100px 1.5fr 1.2fr 120px;">
-        <div class="td contact">${l.contact}</div>
-        <div class="td"><span class="badge badge-param">${l.param_key || '—'}</span></div>
-        <div class="td"><span class="badge ${l.is_waitlist ? 'badge-wait' : 'badge-lead'}">${l.is_waitlist ? '候補' : '預約'}</span></div>
-        <div class="td" style="font-size:11.5px;">${l.pain_choice || '—'}</div>
-        <div class="td" style="font-size:11.5px;">${l.role_choice || '—'}</div>
-        <div class="td">${date}</div>
-      </div>`;
+    return `<div class="table-row" style="display:grid;grid-template-columns:1.2fr 80px 100px 1.5fr 1.2fr 120px;border-bottom:1px solid var(--border);">
+      <div class="td contact">${l.contact}</div>
+      <div class="td"><span class="badge badge-param">${l.param_key||'—'}</span></div>
+      <div class="td"><span class="badge ${l.is_waitlist?'badge-wait':'badge-lead'}">${l.is_waitlist?'候補':'預約'}</span></div>
+      <div class="td" style="font-size:11.5px;">${l.pain_choice||'—'}</div>
+      <div class="td" style="font-size:11.5px;">${l.role_choice||'—'}</div>
+      <div class="td">${date}</div>
+    </div>`;
   }).join('');
 }
 
-// ── Modal helpers ─────────────────────────────────────────
+// ── Options editor helpers ─────────────────────────────────
+function renderOptionRows(containerId, options) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  (options || []).forEach((o, i) => {
+    const row = document.createElement('div');
+    row.className = 'option-row';
+    row.innerHTML = `<input class="field-input" data-idx="${i}" placeholder="選項文字" value="${o.label || ''}" style="padding:8px 10px;" />
+      <button class="btn-icon" onclick="removeOption('${containerId}', ${i})">×</button>`;
+    container.appendChild(row);
+  });
+}
+
+function addPainOption() {
+  const container = document.getElementById('pain-options-editor');
+  const count = container.querySelectorAll('.option-row').length;
+  const row = document.createElement('div');
+  row.className = 'option-row';
+  row.innerHTML = `<input class="field-input" data-idx="${count}" placeholder="選項文字" style="padding:8px 10px;" />
+    <button class="btn-icon" onclick="removeOption('pain-options-editor', ${count})">×</button>`;
+  container.appendChild(row);
+}
+
+function addRoleOption() {
+  const container = document.getElementById('role-options-editor');
+  const count = container.querySelectorAll('.option-row').length;
+  const row = document.createElement('div');
+  row.className = 'option-row';
+  row.innerHTML = `<input class="field-input" data-idx="${count}" placeholder="選項文字" style="padding:8px 10px;" />
+    <button class="btn-icon" onclick="removeOption('role-options-editor', ${count})">×</button>`;
+  container.appendChild(row);
+}
+
+function removeOption(containerId, idx) {
+  const container = document.getElementById(containerId);
+  const rows = container.querySelectorAll('.option-row');
+  if (rows[idx]) rows[idx].remove();
+}
+
+function getOptions(containerId) {
+  const container = document.getElementById(containerId);
+  const inputs = container.querySelectorAll('input');
+  return Array.from(inputs).map(i => i.value.trim()).filter(Boolean).map(v => ({ value: v, label: v }));
+}
+
+// ── Modal ──────────────────────────────────────────────────
 function openModal(cfg = null) {
   editingId = cfg ? cfg.id : null;
-  window._aiDemoChat    = null;
+  window._aiDemoChat = null;
   window._aiCompareRows = null;
   document.getElementById('modal-title').textContent = cfg ? '編輯產品' : '新增產品';
 
-  // reset
-  ['f-param','f-badge','f-headline','f-subtext','f-cta','f-social'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
+  ['f-param','f-badge','f-headline','f-subtext','f-cta','f-social'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-theme').value = 'dark-minimal';
-  document.getElementById('f-total').value = 30;
+  document.getElementById('f-total').value = 5;
   document.getElementById('f-taken').value = 0;
   for (let i=0;i<3;i++) {
     document.getElementById(`p${i}-icon`).value = ['😤','💸','🔄'][i];
@@ -690,6 +495,8 @@ function openModal(cfg = null) {
     document.getElementById(`f${i}-title`).value = '';
     document.getElementById(`f${i}-desc`).value = '';
   }
+  renderOptionRows('pain-options-editor', []);
+  renderOptionRows('role-options-editor', []);
 
   if (cfg) {
     document.getElementById('f-param').value    = cfg.param_key || '';
@@ -699,22 +506,24 @@ function openModal(cfg = null) {
     document.getElementById('f-subtext').value  = cfg.subtext || '';
     document.getElementById('f-cta').value      = cfg.cta_text || '';
     document.getElementById('f-social').value   = cfg.social_proof || '';
-    document.getElementById('f-total').value    = cfg.slots_total || 30;
+    document.getElementById('f-total').value    = cfg.slots_total || 5;
     document.getElementById('f-taken').value    = cfg.slots_taken || 0;
-    const pains = cfg.pains || [];
-    pains.forEach((p, i) => {
-      if (i > 2) return;
-      document.getElementById(`p${i}-icon`).value  = p.icon || '';
-      document.getElementById(`p${i}-title`).value = p.title || '';
-      document.getElementById(`p${i}-desc`).value  = p.desc || '';
+    (cfg.pains || []).forEach((p,i) => {
+      if (i>2) return;
+      document.getElementById(`p${i}-icon`).value  = p.icon||'';
+      document.getElementById(`p${i}-title`).value = p.title||'';
+      document.getElementById(`p${i}-desc`).value  = p.desc||'';
     });
-    const feats = cfg.features || [];
-    feats.forEach((f, i) => {
-      if (i > 2) return;
-      document.getElementById(`f${i}-icon`).value  = f.icon || '';
-      document.getElementById(`f${i}-title`).value = f.title || '';
-      document.getElementById(`f${i}-desc`).value  = f.desc || '';
+    (cfg.features || []).forEach((f,i) => {
+      if (i>2) return;
+      document.getElementById(`f${i}-icon`).value  = f.icon||'';
+      document.getElementById(`f${i}-title`).value = f.title||'';
+      document.getElementById(`f${i}-desc`).value  = f.desc||'';
     });
+    renderOptionRows('pain-options-editor', cfg.pain_options || []);
+    renderOptionRows('role-options-editor', cfg.role_options || []);
+    window._aiDemoChat    = cfg.demo_chat    || null;
+    window._aiCompareRows = cfg.compare_rows || null;
   }
   updateUrlPreview();
   document.getElementById('modal').classList.add('open');
@@ -727,8 +536,7 @@ function closeModal() {
 
 function updateUrlPreview() {
   const param = document.getElementById('f-param').value.trim();
-  const url = param ? `${FRONTEND_BASE}?p=${param}` : '填入網址參數後顯示';
-  document.getElementById('url-text').textContent = url;
+  document.getElementById('url-text').textContent = param ? `${FRONTEND_BASE}?p=${param}` : '填入網址參數後顯示';
 }
 
 function copyUrl() {
@@ -741,26 +549,13 @@ function copyFrontendUrl(param) {
   navigator.clipboard.writeText(`${FRONTEND_BASE}?p=${param}`).then(() => toast('連結已複製！'));
 }
 
-// ── Save product ──────────────────────────────────────────
+// ── Save ───────────────────────────────────────────────────
 async function saveProduct() {
   const param = document.getElementById('f-param').value.trim();
   if (!param) { toast('請填入網址參數', true); return; }
 
-  const pains = [0,1,2].map(i => ({
-    icon:  document.getElementById(`p${i}-icon`).value,
-    title: document.getElementById(`p${i}-title`).value,
-    desc:  document.getElementById(`p${i}-desc`).value,
-  })).filter(p => p.title);
-
-  const features = [0,1,2].map(i => ({
-    icon:  document.getElementById(`f${i}-icon`).value,
-    title: document.getElementById(`f${i}-title`).value,
-    desc:  document.getElementById(`f${i}-desc`).value,
-  })).filter(f => f.title);
-
-  // 取得 AI 生成的 demo_chat 和 compare_rows（若有）
-  const aiDemoChat    = window._aiDemoChat    || null;
-  const aiCompareRows = window._aiCompareRows || null;
+  const pains    = [0,1,2].map(i => ({ icon: document.getElementById(`p${i}-icon`).value, title: document.getElementById(`p${i}-title`).value, desc: document.getElementById(`p${i}-desc`).value })).filter(p => p.title);
+  const features = [0,1,2].map(i => ({ icon: document.getElementById(`f${i}-icon`).value, title: document.getElementById(`f${i}-title`).value, desc: document.getElementById(`f${i}-desc`).value })).filter(f => f.title);
 
   const payload = {
     param_key:    param,
@@ -770,31 +565,25 @@ async function saveProduct() {
     subtext:      document.getElementById('f-subtext').value,
     cta_text:     document.getElementById('f-cta').value,
     social_proof: document.getElementById('f-social').value,
-    slots_total:  parseInt(document.getElementById('f-total').value) || 30,
+    slots_total:  parseInt(document.getElementById('f-total').value) || 5,
     slots_taken:  parseInt(document.getElementById('f-taken').value) || 0,
-    pains:        pains,
-    features:     features,
-    demo_chat:    aiDemoChat,
-    compare_rows: aiCompareRows,
+    pains, features,
+    demo_chat:    window._aiDemoChat    || null,
+    compare_rows: window._aiCompareRows || null,
+    pain_options: getOptions('pain-options-editor'),
+    role_options: getOptions('role-options-editor'),
     is_active:    true,
   };
 
   const btn = document.getElementById('save-btn');
-  btn.textContent = '儲存中...';
-  btn.disabled = true;
+  btn.textContent = '儲存中...'; btn.disabled = true;
 
-  let error;
-  if (editingId) {
-    ({ error } = await sb.from('landing_configs').update(payload).eq('id', editingId));
-  } else {
-    ({ error } = await sb.from('landing_configs').insert(payload));
-  }
+  const { error } = editingId
+    ? await sb.from('landing_configs').update(payload).eq('id', editingId)
+    : await sb.from('landing_configs').insert(payload);
 
-  btn.textContent = '儲存產品';
-  btn.disabled = false;
-
+  btn.textContent = '儲存產品'; btn.disabled = false;
   if (error) { toast('儲存失敗：' + error.message, true); return; }
-
   toast(editingId ? '✅ 產品已更新！' : '✅ 產品已新增！');
   closeModal();
   await loadConfigs();
@@ -802,15 +591,10 @@ async function saveProduct() {
   renderDashboard();
 }
 
-// ── Edit product ──────────────────────────────────────────
-function editProduct(id) {
-  const cfg = allConfigs.find(c => c.id === id);
-  if (cfg) openModal(cfg);
-}
+function editProduct(id) { const cfg = allConfigs.find(c => c.id === id); if (cfg) openModal(cfg); }
 
-// ── Delete product ────────────────────────────────────────
 async function deleteProduct(id) {
-  if (!confirm('確定要刪除這個產品設定？')) return;
+  if (!confirm('確定要刪除？')) return;
   const { error } = await sb.from('landing_configs').delete().eq('id', id);
   if (error) { toast('刪除失敗', true); return; }
   toast('已刪除');
@@ -818,84 +602,30 @@ async function deleteProduct(id) {
   renderProducts();
 }
 
-// ── AI Autofill ───────────────────────────────────────────
+// ── AI Autofill — 透過 Supabase Edge Function ──────────────
 async function aiAutofill() {
   const prompt = document.getElementById('ai-prompt').value.trim();
-  if (!prompt) {
-    document.getElementById('ai-prompt').style.borderColor = '#ef4444';
-    return;
-  }
+  if (!prompt) { document.getElementById('ai-prompt').style.borderColor = '#ef4444'; return; }
+
   const btn = document.getElementById('ai-btn');
   const status = document.getElementById('ai-status');
-  btn.textContent = '生成中...';
-  btn.style.opacity = '.6';
-  btn.disabled = true;
-  status.style.display = 'block';
+  btn.textContent = '生成中...'; btn.style.opacity = '.6'; btn.disabled = true;
+  status.style.display = 'block'; status.style.color = 'var(--text3)';
   status.textContent = '🤖 AI 正在分析你的產品，生成文案中...';
 
-  const systemPrompt = `# Role
-你是一個精通 B2B SaaS 轉換率優化（CRO）與行銷心理學的商業文案大師。
-# Task
-根據用戶輸入的「想測試的商品概念」，自動判斷其場景（對外客服、對內管理、數據整合），並將其轉化為最具殺傷力、符合台灣在地商業大白話的 Landing Page 欄位設定。
-# Output Format
-你必須且只能回傳一個乾淨的 JSON 物件，嚴禁包含任何 Markdown 語法標籤（如 \`\`\`json）、引言或解釋。
-# Constraints
-1. 語言：必須全部使用繁體中文（台灣習慣用語，例如：用「班表」不用「排班表」、用「專人」不用「客服人員」）。
-2. 文案風格：理性、直接、打中痛點、不拍馬屁、去除不必要的修飾贅字。
-3. 名額設定：總名額固定為 5，已使用名額固定為 3（製造僅剩 2 名的急迫感）。
-4. 主題樣式：從 [electric-bold, dark-minimal, soft-pastel, warm-cream] 中挑選一個最符合該產品科技感的樣式名稱。
-# JSON Schema
-{
-  "param": "英文與連字號，例如 clinic-ai",
-  "theme": "主題樣式名稱",
-  "badge": "限額內測．僅開放 5 組專用",
-  "headline": "主標題，必須包含 \\n 作為換行符號，字數控制在 20 字內，主打防漏單或省成本的巨大利益",
-  "subtext": "副標題說明，字數 80 字內，說明產品如何運作與帶來的具體量化數據結果",
-  "cta": "利益導向的行動呼籲文字，例如：免費獲取我的 AI 診所方案",
-  "social": "已有 X 家企業/工作室正在排隊候補",
-  "pains": [
-    { "icon": "emoji", "title": "痛點 1 標題（8字內）", "desc": "痛點 1 具體虧錢或浪費時間的描述（40字內）" },
-    { "icon": "emoji", "title": "痛點 2 標題（8字內）", "desc": "痛點 2 具體虧錢或浪費時間的描述（40字內）" },
-    { "icon": "emoji", "title": "痛點 3 標題（8字內）", "desc": "痛點 3 具體虧錢或浪費時間的描述（40字內）" }
-  ],
-  "features": [
-    { "icon": "emoji", "title": "賣點 1 標題（8字內）", "desc": "對應解決方案的自動化好處（40字內）" },
-    { "icon": "emoji", "title": "賣點 2 標題（8字內）", "desc": "對應解決方案的自動化好處（40字內）" },
-    { "icon": "emoji", "title": "賣點 3 標題（8字內）", "desc": "對應解決方案的自動化好處（40字內）" }
-  ],
-  "demo_chat": {
-    "msg1": "客人發送的第一則訊息（真實口語，符合該產業）",
-    "msg2": "客人發送的第二則訊息（追問或補充）",
-    "reply1": "AI 即時回覆第一則（專業、具體、帶行動指引）",
-    "reply2": "AI 即時回覆第二則（解答追問，體現自動化價值）",
-    "result": "底部自動化成果說明（說明後台自動完成了什麼，一句話）"
-  },
-  "compare_rows": [
-    { "task": "任務名稱", "human": "人工處理的痛苦", "ai": "AI 自動化的結果" },
-    { "task": "任務名稱", "human": "人工處理的痛苦", "ai": "AI 自動化的結果" },
-    { "task": "任務名稱", "human": "人工處理的痛苦", "ai": "AI 自動化的結果" },
-    { "task": "任務名稱", "human": "人工處理的痛苦", "ai": "AI 自動化的結果" }
-  ]
-}`;
-
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch(EDGE_FN_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: prompt }]
-      })
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_ANON}`,
+      },
+      body: JSON.stringify({ prompt }),
     });
 
-    const data = await res.json();
-    const text = data.content?.[0]?.text || '';
-    const clean = text.replace(/```json|```/g, '').trim();
-    const cfg = JSON.parse(clean);
+    const cfg = await res.json();
+    if (cfg.error) throw new Error(cfg.error);
 
-    // 填入所有欄位
     document.getElementById('f-param').value    = cfg.param    || '';
     document.getElementById('f-theme').value    = cfg.theme    || 'dark-minimal';
     document.getElementById('f-badge').value    = cfg.badge    || '';
@@ -904,38 +634,37 @@ async function aiAutofill() {
     document.getElementById('f-cta').value      = cfg.cta      || '';
     document.getElementById('f-social').value   = cfg.social   || '';
 
-    cfg.pains?.forEach((p, i) => {
-      if (i > 2) return;
-      document.getElementById(`p${i}-icon`).value  = p.icon  || '';
-      document.getElementById(`p${i}-title`).value = p.title || '';
-      document.getElementById(`p${i}-desc`).value  = p.desc  || '';
+    cfg.pains?.forEach((p,i) => {
+      if (i>2) return;
+      document.getElementById(`p${i}-icon`).value  = p.icon||'';
+      document.getElementById(`p${i}-title`).value = p.title||'';
+      document.getElementById(`p${i}-desc`).value  = p.desc||'';
     });
-    cfg.features?.forEach((f, i) => {
-      if (i > 2) return;
-      document.getElementById(`f${i}-icon`).value  = f.icon  || '';
-      document.getElementById(`f${i}-title`).value = f.title || '';
-      document.getElementById(`f${i}-desc`).value  = f.desc  || '';
+    cfg.features?.forEach((f,i) => {
+      if (i>2) return;
+      document.getElementById(`f${i}-icon`).value  = f.icon||'';
+      document.getElementById(`f${i}-title`).value = f.title||'';
+      document.getElementById(`f${i}-desc`).value  = f.desc||'';
     });
 
-    // 儲存 demo_chat 和 compare_rows 到全域變數供 saveProduct 使用
+    // 填入表單選項
+    renderOptionRows('pain-options-editor', cfg.pain_options || []);
+    renderOptionRows('role-options-editor', cfg.role_options || []);
+
     window._aiDemoChat    = cfg.demo_chat    || null;
     window._aiCompareRows = cfg.compare_rows || null;
 
     updateUrlPreview();
-    status.textContent = '✅ 填寫完成！對話示範和比較表也已自動生成，請檢查後儲存。';
+    status.textContent = '✅ 填寫完成！包含表單選項，請檢查後儲存。';
     status.style.color = '#22c55e';
   } catch (err) {
-    status.textContent = '❌ 生成失敗，請再試一次。';
+    status.textContent = '❌ 生成失敗：' + err.message;
     status.style.color = '#ef4444';
-    console.error(err);
   } finally {
-    btn.textContent = '✦ AI 生成';
-    btn.style.opacity = '1';
-    btn.disabled = false;
+    btn.textContent = '✦ AI 生成'; btn.style.opacity = '1'; btn.disabled = false;
   }
 }
 
-// ── Auto init ─────────────────────────────────────────────
 if (sessionStorage.getItem('lk_auth') === '1') loadAll();
 </script>
 </body>
